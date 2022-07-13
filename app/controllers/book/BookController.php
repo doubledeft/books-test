@@ -27,4 +27,18 @@ class BookController extends ApiController
             'info'=>$info
         ];
     }
+
+    public function actionUpdateRecommendBook(){
+        $this->rules = [
+            [['user_id','book_id'], 'required'],
+            [['user_id','book_id'],'integer']
+        ];
+        $inputs = $this->validate();
+
+        $info = self::callModuleService('book', 'BookRecommendService', 'updateRecommendBook',
+            $inputs['user_id'],$inputs['book_id']);
+        return [
+            'info'=>$info
+        ];
+    }
 }

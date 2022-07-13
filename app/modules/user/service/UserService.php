@@ -54,23 +54,26 @@ class UserService extends ApiService
      * @params int $user_id 用户名
      * @params string $password 密码
      */
-    public function register($username, $password){
+    public function register($username, $password,$age){
         $info=$this->info([
             'condition'=>[
-                'username'=>$username,
+                'username'=>$username
             ]
         ]);
         if(!empty($info)) {
-            if ($info['status']==0){
-                return self::error('ERROR_INVALID_USERID', '该用户已被删除.请联系管理员恢复');
-            }
+//            if ($info['status']==0){
+//                return self::error('ERROR_INVALID_USERID', '该用户已被删除.请联系管理员恢复');
+//            }
             return self::error('ERROR_INVALID_USERID', '用户已存在');
         }
         $newAccount=$this->add([
             'username'=>$username,
             'password'=>$password,
+            'age'=>$age
         ]);
-        return $newAccount;
+        return [
+            'status'=>true
+        ];
     }
 
 

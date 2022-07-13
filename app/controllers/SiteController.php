@@ -37,4 +37,11 @@ class SiteController extends ApiController
 //        $users=self::callModuleService('user', 'UserService', 'lists',[]);
 //      $email=self::callModuleService('email', 'EmailService', 'sendContractUpdate',$users);
     }
+
+    public function actionInfo(){
+        return [
+            'name'=>'book',
+            'number'=>1
+        ];
+    }
 }

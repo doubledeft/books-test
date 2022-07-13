@@ -11,7 +11,8 @@ class User extends ApiModel
     }
     public function rules(){
         return [
-            [['userid','nickname','password'],'string'],
+            [['id','age'],'integer'],
+            [['username','nickname','password'],'string'],
         ];
     }
 }

@@ -20,11 +20,12 @@ class UserController extends ApiController
     //注册
     public function actionRegister(){
         $this->rules=[
-            [['userid','password'],'required'],
+            [['userid','password','age'],'required'],
             [['userid','password'],'string'],
+            [['age'],'integer']
         ];
         $input=$this->validate();
-        $info=self::callModuleService('user','UserService','register',$input['userid'],$input['password']);
+        $info=self::callModuleService('user','UserService','register',$input['userid'],$input['password'],$input['age']);
         return $info;
     }
 
