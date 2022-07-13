@@ -85,4 +85,20 @@ class OrderController extends ApiController
             'info'=>$info
         ];
     }
+
+    /**
+     * 取消订单
+     */
+    public function actionCancelOrder(){
+        $this->rules = [
+            [['user_id','order_id'], 'required'],
+            [['user_id','order_id'],'integer']
+        ];
+        $inputs = $this->validate();
+
+        $info = self::callModuleService('order', 'OrdersService', 'cancelOrder',$inputs['user_id'],$inputs['order_id']);
+        return [
+            'info'=>$info
+        ];
+    }
 }

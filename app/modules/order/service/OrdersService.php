@@ -171,10 +171,37 @@ class OrdersService extends ApiService
 
     //获取用户所有订单信息
     public function listOrderInfo($userId){
-        $OrderList=$this->lists([
+        $orderList=$this->lists([
             'condition'=>[
-
+                'user_id'=>$userId
+            ],
+            'orderby'=>[
+                'status'=>SORT_DESC
             ]
         ]);
+        return $orderList;
     }
+
+    //取消订单
+    public function cancelOrder($userId,$orderId){
+        $orderInfo=$this->info([
+            'condition'=>[
+                'user_id'=>$userId,
+                'order_id'=>$orderId
+            ]
+        ]);
+        if (empty($orderInfo)){
+            return self::error('ERROR_INVALID_USERID', '该订单不存在');
+        }
+        $this->update([
+            'status'=>5
+        ],[
+            'user_id'=>$userId,
+            'order_id'=>$orderId
+        ]);
+        return [
+            'status'=>true
+        ];
+    }
+
 }
