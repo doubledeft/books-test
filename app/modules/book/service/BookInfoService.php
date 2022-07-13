@@ -17,7 +17,7 @@ class BookInfoService extends ApiService
     //查询图书信息
     public function getBookInfo($bookId){
         $bookInfo=$this->info([
-            'fields'=>['name','id','publish_date','author'],
+            'fields'=>['name','id','publish_date','author','image_url','detail'],
             'condition'=>[
                 'id'=>$bookId
             ]
@@ -51,4 +51,5 @@ class BookInfoService extends ApiService
         ]);
         return $bookList;
     }
+
 }

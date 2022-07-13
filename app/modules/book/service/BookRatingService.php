@@ -16,10 +16,19 @@ class BookRatingService extends ApiService
     }
 
     //获取用户对书评分
-    public function getUserBookRating($userId,$bookId){
+    public function getUserBookRating($userName,$bookId){
+        //查询用户id
+        $userInfo=self::callModuleService('user','UserService','info',[
+            'condition'=>[
+                'username'=>$userName
+            ]
+        ]);
+        if (empty($userInfo)){
+            return self::error('ERROR_INVALID_PASSWORD', '用户不存在');
+        }
         $bookRatingInfo=$this->info([
             'condition'=>[
-                'userid'=>$userId,
+                'userid'=>$userInfo['id'],
                 'bookid'=>$bookId
             ]
         ]);
@@ -30,5 +39,34 @@ class BookRatingService extends ApiService
         return [
             'score'=>$score
         ];
+    }
+
+    //设置评分
+    public function setBookRating($userId,$bookId,$rank){
+        $this->update([
+            'score'=>((int)$rank)*2
+        ],[
+            'userid'=>$userId,
+            'bookid'=>$bookId
+        ]);
+        return [
+            'status'=>true
+        ];
+    }
+
+    public function listHistoryRatingBook($userName){
+        //查询用户id
+        $userInfo=self::callModuleService('user','UserService','info',[
+            'condition'=>[
+                'username'=>$userName
+            ]
+        ]);
+        $ratingList=$this->lists([
+            'condition'=>[
+                'userid'=>$userInfo['id']
+            ],
+            'with'=>['bookInfo']
+        ]);
+        return $ratingList;
     }
 }

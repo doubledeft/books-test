@@ -30,13 +30,14 @@ class BookController extends ApiController
 
     public function actionUpdateRecommendBook(){
         $this->rules = [
-            [['user_id','book_id'], 'required'],
-            [['user_id','book_id'],'integer']
+            [['user_name','book_id'], 'required'],
+            [['book_id'],'integer'],
+            [['user_name'],'string']
         ];
         $inputs = $this->validate();
 
         $info = self::callModuleService('book', 'BookRecommendService', 'updateRecommendBook',
-            $inputs['user_id'],$inputs['book_id']);
+            $inputs['user_name'],$inputs['book_id']);
         return [
             'info'=>$info
         ];
@@ -45,13 +46,14 @@ class BookController extends ApiController
     //获取用户对书评分
     public function actionGetUserBookRating(){
         $this->rules = [
-            [['user_id','book_id'], 'required'],
-            [['user_id','book_id'],'integer']
+            [['user_name','book_id'], 'required'],
+            [['book_id'],'integer'],
+            [['user_name'],'string']
         ];
         $inputs = $this->validate();
 
         $info = self::callModuleService('book', 'BookRatingService', 'getUserBookRating',
-            $inputs['user_id'],$inputs['book_id']);
+            $inputs['user_name'],$inputs['book_id']);
         return [
             'info'=>$info
         ];
@@ -67,6 +69,35 @@ class BookController extends ApiController
         $inputs = $this->validate();
 
         $info = self::callModuleService('book', 'BookInfoService', 'searchBooks',$inputs['keyword']);
+        return [
+            'info'=>$info
+        ];
+    }
+
+    //设置书籍评分
+    public function actionSetBookRating(){
+        $this->rules = [
+            [['user_id','book_id','rank'], 'required'],
+            [['user_id','book_id','rank'],'string']
+        ];
+        $inputs = $this->validate();
+
+        $info = self::callModuleService('book', 'BookRatingService', 'setBookRating',$inputs['user_id']
+            ,$inputs['book_id'],$inputs['rank']);
+        return [
+            'info'=>$info
+        ];
+    }
+
+    //查询用户历史评分书籍
+    public function actionListHistoryRatingBook(){
+        $this->rules = [
+            [['user_name'], 'required'],
+            [['user_name'],'string']
+        ];
+        $inputs = $this->validate();
+
+        $info = self::callModuleService('book', 'BookRatingService', 'listHistoryRatingBook',$inputs['user_name']);
         return [
             'info'=>$info
         ];

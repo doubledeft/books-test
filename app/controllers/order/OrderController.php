@@ -12,12 +12,12 @@ class OrderController extends ApiController
      */
     public function actionGetShopCartInfo(){
         $this->rules = [
-            [['user_id'], 'required'],
-            [['user_id'],'integer']
+            [['user_name'], 'required'],
+            [['user_name'],'string']
         ];
         $inputs = $this->validate();
 
-        $info = self::callModuleService('order', 'OrdersService', 'getShopCartInfo',$inputs['user_id']);
+        $info = self::callModuleService('order', 'CartService', 'getShopCartInfo',$inputs['user_name']);
         return [
             'info'=>$info
         ];
@@ -28,12 +28,13 @@ class OrderController extends ApiController
      */
     public function actionAddShopCartGoods(){
         $this->rules = [
-            [['user_id','book_id'], 'required'],
-            [['user_id','book_id'],'integer']
+            [['user_name','book_id'], 'required'],
+            [['book_id'],'integer'],
+            [['user_name'],'string']
         ];
         $inputs = $this->validate();
 
-        $info = self::callModuleService('order', 'OrdersService', 'addShopCartGoods',$inputs['user_id'],$inputs['book_id']);
+        $info = self::callModuleService('order', 'CartService', 'addShopCartGoods',$inputs['user_name'],$inputs['book_id']);
         return [
             'info'=>$info
         ];
@@ -43,12 +44,13 @@ class OrderController extends ApiController
      */
     public function actionReduceShopCartGoods(){
         $this->rules = [
-            [['user_id','book_id'], 'required'],
-            [['user_id','book_id'],'integer']
+            [['user_name','book_id'], 'required'],
+            [['book_id'],'integer'],
+            [['user_name'],'string']
         ];
         $inputs = $this->validate();
 
-        $info = self::callModuleService('order', 'OrdersService', 'reduceShopCartGoods',$inputs['user_id'],$inputs['book_id']);
+        $info = self::callModuleService('order', 'CartService', 'reduceShopCartGoods',$inputs['user_name'],$inputs['book_id']);
         return [
             'info'=>$info
         ];

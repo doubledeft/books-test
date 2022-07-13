@@ -4,6 +4,7 @@ namespace app\modules\order\service;
 
 use app\common\base\ApiService;
 use app\common\Consts;
+use app\modules\book\model\BookInfo;
 use app\modules\order\model\Orders;
 use app\modules\user\models\Account;
 
@@ -16,10 +17,19 @@ class OrdersService extends ApiService
     }
 
     //获取用户购物车信息
-    public function getShopCartInfo($userId){
+    public function getShopCartInfo($userName){
+        //查询用户id
+        $userInfo=self::callModuleService('user','UserService','info',[
+            'condition'=>[
+                'username'=>$userName
+            ]
+        ]);
+        if (empty($userInfo)){
+            return self::error('ERROR_INVALID_PASSWORD', '用户不存在');
+        }
         $orderInfo=$this->info([
             'condition'=>[
-                'user_id'=>$userId,
+                'user_id'=>$userInfo['id'],
                 'status'=>Consts::ORDER_IN_CART
             ]
         ]);
@@ -27,11 +37,13 @@ class OrdersService extends ApiService
             return self::error('ERROR_INVALID_USERID', '用户购物车为空');
         }
         //查询用户购物车内容
-        $orderDetailList=$this->lists([
+        $orderDetailList=self::callModuleService('order','OrderDetailService','list',[
+            'fields'=>['id','book_id'],
             'condition'=>[
                 'order_id'=>$orderInfo['order_id'],
-                'user_id'=>$userId
-            ]
+                'user_id'=>$userInfo['id']
+            ],
+            'with'=>['bookInfo']
         ]);
         return $orderDetailList;
     }

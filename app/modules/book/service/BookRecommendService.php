@@ -3,14 +3,32 @@
 namespace app\modules\book\service;
 
 use app\common\base\ApiService;
+use app\modules\book\model\BookRatings;
+use app\modules\book\model\BookRecommend;
 
 class BookRecommendService extends ApiService
 {
+
+    public function __construct()
+    {
+        parent::init();
+        $this->model=new BookRecommend();
+    }
+
     //更新推荐书籍
-    public function updateRecommendBook($userId,$bookId){
+    public function updateRecommendBook($userName,$bookId){
+        //查询用户id
+        $userInfo=self::callModuleService('user','UserService','info',[
+            'condition'=>[
+                'username'=>$userName
+            ]
+        ]);
+        if (empty($userInfo)){
+            return self::error('ERROR_INVALID_PASSWORD', '用户不存在');
+        }
         $recommendBookInfo=$this->info([
-            'condtion'=>[
-                'user_id'=>$userId,
+            'condition'=>[
+                'user_id'=>$userInfo['id'],
                 'book_id'=>$bookId
             ]
         ]);
@@ -29,7 +47,7 @@ class BookRecommendService extends ApiService
         }else{
             $score=0.5;
             $this->add([
-                'user_id'=>$userId,
+                'user_id'=>$userInfo['id'],
                 'book_id'=>$bookId,
                 'score'=>$score
             ]);
