@@ -17,8 +17,9 @@ class BookInfoService extends ApiService
     //查询图书信息
     public function getBookInfo($bookId){
         $bookInfo=$this->info([
+            'fields'=>['name','id','publish_date','author'],
             'condition'=>[
-                'book_id'=>$bookId
+                'id'=>$bookId
             ]
         ]);
         if (empty($bookInfo)){
@@ -34,6 +35,19 @@ class BookInfoService extends ApiService
             'condition'=>[
                 'is_shelf'=>1
             ]
+        ]);
+        return $bookList;
+    }
+
+    //近似查询图书
+    public function searchBooks($keyword){
+        $bookList=$this->lists([
+            'fields'=>['name','author','id','image_url'],
+            'condition'=>[
+                'and',
+                ['like','name',$keyword]
+            ],
+            'size'=>20
         ]);
         return $bookList;
     }

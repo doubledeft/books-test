@@ -76,6 +76,19 @@ class UserService extends ApiService
         ];
     }
 
+    //获取用户信息
+    public function getUserInfo($username){
+        $userInfo=$this->info([
+            'fields'=>[
+                'username','password','age'
+            ],
+            'condition'=>[
+                'username'=>$username
+            ]
+        ]);
+        return $userInfo;
+    }
+
 
     //删除用户
     public function delete($userid){

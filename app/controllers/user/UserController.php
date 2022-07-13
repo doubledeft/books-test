@@ -29,6 +29,18 @@ class UserController extends ApiController
         return $info;
     }
 
+
+    //查询用户信息
+    public function actionGetUserInfo(){
+        $this->rules=[
+            [['userid'],'required'],
+            [['userid'],'string']
+        ];
+        $input=$this->validate();
+        $info=self::callModuleService('user','UserService','getUserInfo',$input['userid']);
+        return $info;
+    }
+
     //删除账号
     public function actionDelete(){
         $this->rules=[
