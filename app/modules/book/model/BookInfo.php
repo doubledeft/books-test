@@ -3,6 +3,7 @@
 namespace app\modules\book\model;
 
 use app\common\base\ApiModel;
+use app\modules\business\models\ApplyNotifyConfig;
 
 class BookInfo extends ApiModel
 {
@@ -17,4 +18,10 @@ class BookInfo extends ApiModel
             [['market_price','member_price','discount'],'double'],
         ];
     }
+
+
+//    public function getRecommendInfo()
+//    {
+//        return $this->hasOne(BookRecommend::className(), ['user_id' => 'user_id']);
+//    }
 }

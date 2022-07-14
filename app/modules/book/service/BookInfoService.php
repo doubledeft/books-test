@@ -73,4 +73,63 @@ class BookInfoService extends ApiService
             'status'=>true
         ];
     }
+
+
+    public function listHotBook(){
+       $recommendList= self::callModuleService('book','BookRecommendService','lists',[
+            'condition'=>[
+                'and',
+                ['>','score',2]
+            ],
+            'size'=>20
+        ]);
+        $bookIds=array_column($recommendList,'book_id');
+        $bookList=$this->lists([
+            'fields'=>[
+                'name','author','id','image_url'
+            ],
+            'condition'=>[
+                'id'=>$bookIds
+            ]
+        ]);
+        return $bookList;
+    }
+
+    public function recommendByUser($userName){
+        //查询用户id
+        $userInfo=self::callModuleService('user','UserService','info',[
+            'condition'=>[
+                'username'=>$userName
+            ]
+        ]);
+        if (empty($userInfo)){
+            return self::error('ERROR_INVALID_PASSWORD', '用户不存在');
+        }
+        $userRecommendList=self::callModuleService('book','BookRecommendService','lists',[
+            'condition'=>[
+                'user_id'=>$userInfo['id']
+            ],
+        ]);
+        return $userRecommendList;
+        $bookIds=array_column($userRecommendList,'book_id');
+        //查询其他用户对这些书的打分
+        $userRating=self::callModuleService('book','BookRatingService','lists',[
+            'condition'=>[
+                'bookid'=>$bookIds
+            ]
+        ]);
+        //查询这些用户的推荐书籍
+        $recomendBookList=self::callModuleService('book','BookRecommendService','lists',[
+            'condition'=>[
+                'user_id'=>array_column($userRating,'userid')
+            ]
+        ]);
+        $bookList=$this->lists([
+            'fields'=>['name','author','id','image_url'],
+            'condition'=>[
+                'id'=>array_column($recomendBookList,'book_id')
+            ]
+        ]);
+        return $bookList;
+    }
 }

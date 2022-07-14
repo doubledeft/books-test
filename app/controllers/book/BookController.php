@@ -11,125 +11,162 @@ class BookController extends ApiController
     {
         $this->rules = [
             [['book_id'], 'required'],
-            [['book_id'],'integer']
+            [['book_id'], 'integer']
         ];
         $inputs = $this->validate();
 
-        $info = self::callModuleService('book', 'BookInfoService', 'getBookInfo',$inputs['book_id']);
+        $info = self::callModuleService('book', 'BookInfoService', 'getBookInfo', $inputs['book_id']);
         return [
-            'info'=>$info
+            'info' => $info
         ];
     }
 
-    public function actionListBookInfo(){
+    public function actionListBookInfo()
+    {
         $info = self::callModuleService('book', 'BookInfoService', 'listBookInfo');
         return [
-            'info'=>$info
+            'info' => $info
         ];
     }
 
-    public function actionUpdateRecommendBook(){
+    public function actionUpdateRecommendBook()
+    {
         $this->rules = [
-            [['user_name','book_id'], 'required'],
-            [['book_id'],'integer'],
-            [['user_name'],'string']
+            [['user_name', 'book_id'], 'required'],
+            [['book_id'], 'integer'],
+            [['user_name'], 'string']
         ];
         $inputs = $this->validate();
 
         $info = self::callModuleService('book', 'BookRecommendService', 'updateRecommendBook',
-            $inputs['user_name'],$inputs['book_id']);
+            $inputs['user_name'], $inputs['book_id']);
         return [
-            'info'=>$info
+            'info' => $info
         ];
     }
 
     //获取用户对书评分
-    public function actionGetUserBookRating(){
+    public function actionGetUserBookRating()
+    {
         $this->rules = [
-            [['user_name','book_id'], 'required'],
-            [['book_id'],'integer'],
-            [['user_name'],'string']
+            [['user_name', 'book_id'], 'required'],
+            [['book_id'], 'integer'],
+            [['user_name'], 'string']
         ];
         $inputs = $this->validate();
 
         $info = self::callModuleService('book', 'BookRatingService', 'getUserBookRating',
-            $inputs['user_name'],$inputs['book_id']);
+            $inputs['user_name'], $inputs['book_id']);
         return [
-            'info'=>$info
+            'info' => $info
         ];
     }
 
 
     //搜索书籍
-    public function actionSearchBooks(){
+    public function actionSearchBooks()
+    {
         $this->rules = [
             [['keyword'], 'required'],
-            [['keyword'],'string']
+            [['keyword'], 'string']
         ];
         $inputs = $this->validate();
 
-        $info = self::callModuleService('book', 'BookInfoService', 'searchBooks',$inputs['keyword']);
+        $info = self::callModuleService('book', 'BookInfoService', 'searchBooks', $inputs['keyword']);
         return [
-            'info'=>$info
+            'info' => $info
         ];
     }
 
     //设置书籍评分
-    public function actionSetBookRating(){
+    public function actionSetBookRating()
+    {
         $this->rules = [
-            [['user_id','book_id','rank'], 'required'],
-            [['user_id','book_id','rank'],'string']
+            [['user_id', 'book_id', 'rank'], 'required'],
+            [['user_id', 'book_id', 'rank'], 'string']
         ];
         $inputs = $this->validate();
 
-        $info = self::callModuleService('book', 'BookRatingService', 'setBookRating',$inputs['user_id']
-            ,$inputs['book_id'],$inputs['rank']);
+        $info = self::callModuleService('book', 'BookRatingService', 'setBookRating', $inputs['user_id']
+            , $inputs['book_id'], $inputs['rank']);
         return [
-            'info'=>$info
+            'info' => $info
         ];
     }
 
     //查询用户历史评分书籍
-    public function actionListHistoryRatingBook(){
+    public function actionListHistoryRatingBook()
+    {
         $this->rules = [
             [['user_name'], 'required'],
-            [['user_name'],'string']
+            [['user_name'], 'string']
         ];
         $inputs = $this->validate();
 
-        $info = self::callModuleService('book', 'BookRatingService', 'listHistoryRatingBook',$inputs['user_name']);
+        $info = self::callModuleService('book', 'BookRatingService', 'listHistoryRatingBook', $inputs['user_name']);
         return [
-            'info'=>$info
+            'info' => $info
         ];
     }
 
 
     //删除书籍
-    public function actionDeleteBook(){
+    public function actionDeleteBook()
+    {
         $this->rules = [
             [['book_id'], 'required'],
-            [['book_id'],'integer']
+            [['book_id'], 'integer']
         ];
         $inputs = $this->validate();
 
-        $info = self::callModuleService('book', 'BookInfoService', 'deleteBook',$inputs['book_id']);
+        $info = self::callModuleService('book', 'BookInfoService', 'deleteBook', $inputs['book_id']);
         return [
-            'info'=>$info
+            'info' => $info
         ];
     }
 
     //添加书籍
-    public function actionAddBook(){
+    public function actionAddBook()
+    {
         $this->rules = [
-            [['name','author','publish_date','press','image_url'], 'required'],
-            [['name','author','publish_date','press','image_url'],'string']
+            [['name', 'author', 'publish_date', 'press', 'image_url'], 'required'],
+            [['name', 'author', 'publish_date', 'press', 'image_url'], 'string']
         ];
         $inputs = $this->validate();
 
         $info = self::callModuleService('book', 'BookInfoService', 'addBook', $inputs['name'],
-            $inputs['author'],$inputs['publish_date'],$inputs['press'],$inputs['iamge_url']);
+            $inputs['author'], $inputs['publish_date'], $inputs['press'], $inputs['iamge_url']);
         return [
-            'info'=>$info
+            'info' => $info
+        ];
+    }
+
+    //获得热门书籍
+    public function actionListHotBook()
+    {
+//        $this->rules = [
+//            [['book_ids'], 'required'],
+//            [['book_ids'],'app\helpers\ArrayValidator']
+//        ];
+//        $inputs = $this->validate();
+        $info = self::callModuleService('book', 'BookInfoService', 'listHotBook');
+        return [
+            'info' => $info
+        ];
+    }
+
+
+    //基于用户的推荐
+    public function actionRecommendByUser()
+    {
+        $this->rules = [
+            [['user_name'], 'required'],
+            [['user_name'], 'string']
+        ];
+        $inputs = $this->validate();
+        $info = self::callModuleService('book', 'BookInfoService', 'recommendByUser',$inputs['user_name']);
+        return [
+            'info' => $info
         ];
     }
 }
