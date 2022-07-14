@@ -102,4 +102,34 @@ class BookController extends ApiController
             'info'=>$info
         ];
     }
+
+
+    //删除书籍
+    public function actionDeleteBook(){
+        $this->rules = [
+            [['book_id'], 'required'],
+            [['book_id'],'integer']
+        ];
+        $inputs = $this->validate();
+
+        $info = self::callModuleService('book', 'BookInfoService', 'deleteBook',$inputs['book_id']);
+        return [
+            'info'=>$info
+        ];
+    }
+
+    //添加书籍
+    public function actionAddBook(){
+        $this->rules = [
+            [['name','author','publish_date','press','image_url'], 'required'],
+            [['name','author','publish_date','press','image_url'],'string']
+        ];
+        $inputs = $this->validate();
+
+        $info = self::callModuleService('book', 'BookInfoService', 'addBook', $inputs['name'],
+            $inputs['author'],$inputs['publish_date'],$inputs['press'],$inputs['iamge_url']);
+        return [
+            'info'=>$info
+        ];
+    }
 }

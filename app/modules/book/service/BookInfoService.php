@@ -32,9 +32,11 @@ class BookInfoService extends ApiService
     //列出所有图书信息
     public function listBookInfo(){
         $bookList=$this->lists([
+            'fields'=>['id','name','author','press'],
             'condition'=>[
                 'is_shelf'=>1
-            ]
+            ],
+            'size'=>20
         ]);
         return $bookList;
     }
@@ -52,4 +54,23 @@ class BookInfoService extends ApiService
         return $bookList;
     }
 
+    public function deleteBook($bookId){
+        $bookInfo=$this->info([
+            'fields'=>['name','id','publish_date','author','image_url','detail'],
+            'condition'=>[
+                'id'=>$bookId
+            ]
+        ]);
+        if (empty($bookInfo)){
+            return self::error('ERROR_INVALID_PASSWORD', '没有此图书信息');
+        }
+        $this->update([
+            'is_shelf'=>0
+        ],[
+            'id'=>$bookId
+        ]);
+        return [
+            'status'=>true
+        ];
+    }
 }

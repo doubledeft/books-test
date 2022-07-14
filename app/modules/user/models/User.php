@@ -12,7 +12,7 @@ class User extends ApiModel
     public function rules(){
         return [
             [['id','age'],'integer'],
-            [['username','nickname','password'],'string'],
+            [['username','nickname','password','string'],'string'],
         ];
     }
 }

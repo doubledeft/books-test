@@ -91,21 +91,22 @@ class UserService extends ApiService
 
 
     //删除用户
-    public function delete($userid){
-        $info=$this->info([
+    public function delete($userName){
+        //查询用户id
+        $userInfo=self::callModuleService('user','UserService','info',[
             'condition'=>[
-                'userid'=>$userid,
+                'username'=>$userName
             ]
         ]);
-        if(empty($info)) {
-            return self::error('ERROR_INVALID_USERID', '不存在该用户');
+        if (empty($userInfo)){
+            return self::error('ERROR_INVALID_PASSWORD', '用户不存在');
         }
-        if ($info['status']==0){
+        if ($userInfo['active']==0){
             return self::error('ERROR_INVALID_USERID', '该用户已被删除');
         }
         $info=$this->update(
-            ['status'=>0],
-            ['userid'=>$userid]
+            ['active'=>0],
+            ['id'=>$userInfo['id']]
         );
 
         return $info;
@@ -142,27 +143,23 @@ class UserService extends ApiService
     }
 
     //修改密码
-    public function updatePassword($userid,$password){
-        $info=$this->info([
+    public function updatePassword($userName,$password){
+        //查询用户id
+        $userInfo=self::callModuleService('user','UserService','info',[
             'condition'=>[
-                'userid'=>$userid,
-                'status'=>1
+                'username'=>$userName
             ]
         ]);
-        if (empty($info)){
-            return self::error('ERROR_INVALID_USERID', '用户不存在');
+        if (empty($userInfo)){
+            return self::error('ERROR_INVALID_PASSWORD', '用户不存在');
         }
         $this->update(
             ['password'=>$password],
-            ['userid'=>$userid]
+            ['userid'=>$userInfo['id']]
         );
-        $info=$this->info([
-            'condition'=>[
-                'userid'=>$userid,
-                'status'=>1
-            ]
-        ]);
-        return $info;
+       return [
+           'status'=>true
+       ];
     }
 
 
@@ -203,9 +200,11 @@ class UserService extends ApiService
     //查询所有用户的基本信息
     public function queryAll(){
         $lists=$this->lists([
+            'fields'=>['id','country','age'],
             'condition'=>[
-                'status'=>1
-            ]
+                'active'=>"1"
+            ],
+            'size'=>20
         ]);
         return $lists;
     }
@@ -238,6 +237,52 @@ class UserService extends ApiService
             'userid'=>$info['userid'],
             'role_name'=>$info['role_name'],
             'email'=>$info['email']
+        ];
+    }
+
+    public function updateUserInfo($userName,$location,$age){
+        //查询用户id
+        $userInfo=self::callModuleService('user','UserService','info',[
+            'condition'=>[
+                'username'=>$userName
+            ]
+        ]);
+        if (empty($userInfo)){
+            return self::error('ERROR_INVALID_PASSWORD', '用户不存在');
+        }
+        //更新用户
+        $this->update([
+            'location'=>$location,
+            'age'=>$age
+        ]);
+        return [
+            'status'=>true
+        ];
+    }
+
+    //关键词查询用户
+    public function searchUsers($keyword){
+        $userList=$this->lists([
+            'fields'=>['id','country','age'],
+            'condition'=>[
+                'and',
+                ['like','user_name',$keyword]
+            ],
+            'size'=>20
+        ]);
+        return $userList;
+    }
+
+    public function addBook($name,$author,$publishDate,$press,$imageUrl){
+        $this->add([
+           'name'=>$name,
+           'author'=>$author,
+           'publish_date'=>$publishDate,
+           'press'=>$press,
+           'image_url'=>$imageUrl
+        ]);
+        return [
+            'status'=>true
         ];
     }
 }

@@ -43,4 +43,18 @@ class ApiController extends Controller
         $this->timeNow = Yii::$app->params['timeNow'];
         $this->enableCsrfValidation = false;
     }
+
+
+    public function callModuleService($module, $service, $method)
+    {
+        $args = array_slice(func_get_args(), 3);
+
+        $serviceClass = vsprintf('\app\modules\%s\service\%s', array($module, $service));
+        $callable = array(new $serviceClass, $method);
+        if (is_callable($callable)) {
+            return call_user_func_array($callable, $args);
+        } else {
+            throw new Exception('unkown service call[module:' . $module . ', service:' . $service . ', method:' . $method . ']');
+        }
+    }
 }

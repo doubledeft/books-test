@@ -6,7 +6,6 @@ use app\common\base\ApiController;
 
 class UserController extends ApiController
 {
-    //登录
     public function actionLogin(){
         $this->rules=[
             [['userid','password'],'required'],
@@ -44,11 +43,11 @@ class UserController extends ApiController
     //删除账号
     public function actionDelete(){
         $this->rules=[
-            [['userid'],'required'],
-            [['userid'],'string'],
+            [['user_name'],'required'],
+            [['user_name'],'string'],
         ];
         $input=$this->validate();
-        $info=self::callModuleService('user','UserService','delete',$input['userid']);
+        $info=self::callModuleService('user','UserService','delete',$input['user_name']);
         return $info;
     }
     //修改用户账号名
@@ -64,13 +63,11 @@ class UserController extends ApiController
     //修改密码
     public function actionUpdatePassword(){
         $this->rules=[
-            [['userid','newPassword'],'required'],
-            [['userid','newPassword'],'string'],
+            [['user_name','password'],'required'],
+            [['user_name','password'],'string'],
         ];
         $input=$this->validate();
-        $info=self::callModuleService('user','UserService','updatePassword',$input['userid'],$input['newPassword']);
-
-
+        $info=self::callModuleService('user','UserService','updatePassword',$input['user_name'],$input['password']);
         return $info;
     }
 
@@ -153,5 +150,29 @@ class UserController extends ApiController
 
         return $info;
     }
+    //修改用户信息
+    public function actionUpdateUserInfo(){
+        $this->rules=[
+            [['user_name','location','age'],'required'],
+            [['user_name','location'],'string'],
+            [['age'],'integer']
+        ];
+        $input=$this->validate();
+        $info=self::callModuleService('user','UserService','updateUserInfo',$input['user_name'],$input['location'],$input['age']);
+        return $info;
+    }
 
+    //关键词查询用户
+    public function actionSearchUsers(){
+        $this->rules = [
+            [['keyword'], 'required'],
+            [['keyword'],'string']
+        ];
+        $inputs = $this->validate();
+
+        $info = self::callModuleService('user', 'UserService', 'searchUsers',$inputs['keyword']);
+        return [
+            'info'=>$info
+        ];
+    }
 }
